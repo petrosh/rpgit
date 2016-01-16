@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://github.com/Fork-n-Play/rpgit/blob/master/settings_schema.json",
+  "title": "settings",
+  "description": "json settings for rpgit",
+
+  "definitions": {
+    "roll": {
+      "type": "object",
+      "properties": {
+        "dices": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sides": {
+          "type": "integer",
+          "minimum": 2
+        }
+      },
+      "required": ["dices", "sides"]
+    }
+  },
+
+  "type": "object",
+  "properties": {
+    "roll": { "$ref": "#/definitions/roll" }
+  },
+  "required": [
+    "roll"
+  ]
+}
