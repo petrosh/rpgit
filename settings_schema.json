@@ -1,31 +1,63 @@
 {
   "$schema": "http://json-schema.org/schema#",
   "id": "https://github.com/Fork-n-Play/rpgit/blob/master/settings_schema.json",
-  "title": "settings",
-  "description": "json settings for rpgit",
+  "title": "Settings",
+  "description": "Json settings for rpgit",
 
   "definitions": {
+
     "roll": {
       "type": "object",
       "properties": {
         "dices": {
+          "description": "Number of dices in a roll",
           "type": "integer",
           "minimum": 1
         },
         "sides": {
+          "description": "Number of sides of each dice",
           "type": "integer",
           "minimum": 2
         }
       },
       "required": ["dices", "sides"]
+    },
+
+    "units": {
+      "type": "object",
+      "description": "Units of measurement",
+      "properties": {
+        "length": {
+          "type": "string",
+          "enum": [
+            "metre",
+            "yard"
+          ]
+        },
+        "weight": {
+          "type": "string",
+          "enum": [
+            "kilogram",
+            "pound"
+          ]
+        },
+        "temperature": {
+          "type": "string",
+          "enum": [
+            "celsius",
+            "fahrenheit"
+          ]
+        }
+      },
+      "required": ["length", "weight", "temperature"]
     }
+
   },
 
   "type": "object",
   "properties": {
-    "roll": { "$ref": "#/definitions/roll" }
+    "roll": { "$ref": "#/definitions/roll" },
+    "units": { "$ref": "#/definitions/units" }
   },
-  "required": [
-    "roll"
-  ]
+  "required": ["roll", "units"]
 }
