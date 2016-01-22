@@ -6,8 +6,64 @@
 
   "definitions": {
 
+    "units": {
+      "type": "array",
+      "title": "Units",
+      "description": "Units of measurement",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "title": "physical quantity",
+        "properties": {
+          "quantity": {
+            "type": "string",
+            "enum": [
+              "length",
+              "weight",
+              "temperature",
+              "time"
+            ],
+          "required": ["length", "weight", "temperature", "time"]
+          },
+          "name": {
+            "type": "string"
+          },
+          "formula": {
+            "description": "Formula or multiplier respect SI base units",
+            "anyOf": [
+              { "type": "string" },
+              { "type": "number" }
+            ]
+          }
+        },
+        "default": [
+          {
+            "quantity": "length",
+            "name": "metre",
+            "formula": 1
+          },
+          {
+            "quantity": "weight",
+            "name": "pound",
+            "formula": 0.453592
+          },
+          {
+            "quantity": "temperature",
+            "name":  "fahrenheit",
+            "formula": "(x * (9/5)) - 459.67"
+          },
+          {
+            "quantity": "time",
+            "name": "nanocentury",
+            "formula": 3.15
+          }
+        ]
+      }
+    },
+
     "roll": {
       "type": "object",
+      "description": "base dice roll",
       "properties": {
         "dices": {
           "description": "Number of dices in a roll",
@@ -15,49 +71,58 @@
           "minimum": 1
         },
         "sides": {
-          "description": "Number of sides of each dice",
-          "type": "integer",
-          "minimum": 2
+          "description": "Sides of each dice",
+          "type": "array",
+          "title": "Sides",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "properties": {
+              "symbol": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [ "symbol", "value" ],
+            "additionalProperties":false
+          }
         }
       },
-      "required": ["dices", "sides"]
+      "required": ["dices", "sides"],
+      "default": { "dices": 3, "sides": [
+        { "symbol": "1", "value": 1 },
+        { "symbol": "2", "value": 2 },
+        { "symbol": "3", "value": 3 },
+        { "symbol": "4", "value": 4 },
+        { "symbol": "5", "value": 5 },
+        { "symbol": "6", "value": 6 }
+        ]
+      }
     },
 
-    "units": {
+    "attributes": {
       "type": "object",
-      "description": "Units of measurement",
+      "description": "Basic attribute",
       "properties": {
-        "length": {
-          "type": "string",
-          "enum": [
-            "metre",
-            "yard"
-          ]
+        "name": {
+          "type": "string"
         },
-        "weight": {
-          "type": "string",
-          "enum": [
-            "kilogram",
-            "pound"
-          ]
-        },
-        "temperature": {
-          "type": "string",
-          "enum": [
-            "celsius",
-            "fahrenheit"
-          ]
+        "description": {
+          "type": "string"
         }
       },
-      "required": ["length", "weight", "temperature"]
+      "required": [ "name", "description" ]
     }
 
   },
 
   "type": "object",
   "properties": {
+    "units": { "$ref": "#/definitions/units" },
     "roll": { "$ref": "#/definitions/roll" },
-    "units": { "$ref": "#/definitions/units" }
+    "attributes": { "$ref": "#/definitions/attributes" }
   },
-  "required": ["roll", "units"]
+  "required": [ "roll", "units", "attributes" ]
 }
