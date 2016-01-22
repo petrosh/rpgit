@@ -1,5 +1,5 @@
 # rpgit
-rpgit
+rpgitd
 
 - Preview: http://127.0.0.1/~petrosh/RPGIT/rpgit/
 - References: https://developer.github.com/v3/git/refs/
