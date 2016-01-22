@@ -23,7 +23,7 @@
               "temperature",
               "time"
             ],
-          "required": ["length", "weight", "temperature", "time"]
+            "required": ["length", "weight", "temperature", "time"]
           },
           "name": {
             "type": "string"
@@ -35,30 +35,30 @@
               { "type": "number" }
             ]
           }
+        }
+      },
+      "default": [
+        {
+          "quantity": "length",
+          "name": "metre",
+          "formula": 1
         },
-        "default": [
-          {
-            "quantity": "length",
-            "name": "metre",
-            "formula": 1
-          },
-          {
-            "quantity": "weight",
-            "name": "pound",
-            "formula": 0.453592
-          },
-          {
-            "quantity": "temperature",
-            "name":  "fahrenheit",
-            "formula": "(x * (9/5)) - 459.67"
-          },
-          {
-            "quantity": "time",
-            "name": "nanocentury",
-            "formula": 3.15
-          }
-        ]
-      }
+        {
+          "quantity": "weight",
+          "name": "pound",
+          "formula": 0.453592
+        },
+        {
+          "quantity": "temperature",
+          "name":  "fahrenheit",
+          "formula": "(x * (9/5)) - 459.67"
+        },
+        {
+          "quantity": "time",
+          "name": "nanocentury",
+          "formula": 3.15
+        }
+      ]
     },
 
     "roll": {
