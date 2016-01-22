@@ -11,130 +11,30 @@
     <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Oswald:400,700,300|Inconsolata:400,700' type='text/css'> -->
   </head>
   <body>
+    <section id="login" style="display: none;">
+      <header>
+        <h1>Login</h1>
+      </header>
+      <p>
+        Paste your personal token (generate a new one <a target ="_blank" href="https://github.com/settings/tokens/new">here</a>, you&apos;ll need only the `public_repo` scope selected).
+      </p>
+      <form>
+        <input type="text" name="token" id="token" value="" size="50">
+        <input type="button" name="submitLogin" id="submitLogin" value="GO">
+      </form>
+    </section>
     <section>
       <header>
         <h1>Home</h1>
+        <ul id="monitor"></ul>
       </header>
-      <p id ="alert"></p>
-      <div id='editor_holder'></div>
+      <div id="settings" style="display: none;">
+        <div id='editor_holder'></div>
+        <button id='submit'>Submit</button>
+      </div>
     </section>
+    <p id ="alert"></p>
   </body>
-  <script src="js/ghre.js"></script>
   <script src="js/jsoneditor.js"></script>
-  <script type="text/javascript">
-    //
-    // DECLARATIONS
-    //
-    var thisRepository = {}, systemRepository = {}, systemRepositoryName = '', systemSha = '';
-
-    //
-    // CHECK login
-    //
-    if ( localStorage.getItem( 'rpgit.player.token' ) ) {
-      token = atob( localStorage.getItem( 'rpgit.player.token' ) );
-      var url = "https://api.github.com/repos/" + username + "/" + reponame;
-      getAPI( url, repo, error, {} );
-    } else {
-      window.location = 'login.html';
-    }
-
-    function repo(){
-      thisRepository = JSON.parse( this.responseText );
-      etag = this.getResponseHeader( "ETag" ).replace( /^[W/"]{1,}|."/g, "" );
-
-      // ORGANIZATION
-      if( thisRepository.owner.type == "Organization" ){
-        var date = formatDate( thisRepository.created_at );
-        alert.innerHTML = "game started: " + date;
-        alert.innerHTML += "<br>players: " + thisRepository.forks;
-        if(thisRepository.permissions.admin == true){
-          console.warn('GM connected');
-          var url = "https://api.github.com/repos/" + username + "/" + reponame + "/pulls";
-          getAPI( url, pulls, error, {} );
-        }else{
-          console.info( 'Guest player' );
-        }
-      }
-
-      // PLAYER
-      if( thisRepository.owner.type == "User" ){
-        var date = formatDate( thisRepository.created_at );
-        if( thisRepository.permissions.admin == true ){
-          alert.innerHTML = "joined game: " + date;
-          console.warn( 'Player connected' );
-          systemRepositoryName = thisRepository.parent.full_name;
-          var url = "https://api.github.com/repos/" + systemRepositoryName + "/git/refs/heads/master";
-          getAPI( url, systemRef, error, {} );
-        }else{
-          console.info( 'Player in wrong page' );
-          var systemUrl = thisRepository.parent.html_url;
-          alert.innerHTML += "You don't own this player repository, <a href='" + systemUrl + "'>fork</a> you own copy";
-        }
-      }
-
-    }
-
-    function  pulls(){
-      pullList = JSON.parse( this.responseText );
-      console.info( 'pulls: ' + pullList.length );
-      if( pullList.length != 0 ){
-        alert.innerHTML += "<br><a href='" + thisRepository.html_url + "/pulls'>" + pullList.length + ' pulls waiting</a>';
-      }else{
-        alert.innerHTML += "<br>No pulls";
-      }
-      var url = "https://api.github.com/repos/" + username + "/" + reponame + "/contents/settings.json";
-      getAPI( url, settingResp, noSettings, {} );
-    }
-
-    function settingResp(){
-      var resp = JSON.parse( this.responseText );
-      console.info( resp );
-    }
-
-    function noSettings(){
-      if( this.status == 404 ){
-        console.log( 'create one' );
-        var url = "https://api.github.com/repos/" + username + "/" + reponame + "/contents/settings_schema.json";
-        getAPI( url, settingSchema, error, {} );
-      }
-    }
-
-    function settingSchema(){
-      var jsonSchema = JSON.parse( this.responseText );
-      var editor = new JSONEditor(document.getElementById('editor_holder'),{
-        schema: jsonSchema,
-        disable_properties: true,
-        disable_edit_json: true
-      });
-    }
-
-    function  systemRef(){
-      var resp = JSON.parse( this.responseText );
-      systemSha = resp.object.sha;
-      console.info( 'system ref:', systemSha );
-      var url = "https://api.github.com/repos/" + username + "/" + reponame + "/git/refs/heads/master";
-      getAPI( url, playerRef, error, {} );
-    }
-
-    function  playerRef(){
-      var resp = JSON.parse( this.responseText );
-      playerSha = resp.object.sha
-      console.info( 'player ref:', playerSha );
-      if( playerSha == systemSha ){
-        alert.innerHTML += '<br>updated';
-      }else{
-        alert.innerHTML += '<br>need update';
-      }
-    }
-
-    function error(){
-      alert.innerHTML = "Error";
-      console.warn(this);
-    }
-
-    function formatDate( isoDate ){
-      var date = new Date( isoDate );
-      return date.toLocaleDateString();
-    }
-  </script>
+  <script src="js/rpgit.js"></script>
 </html>
