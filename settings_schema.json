@@ -61,19 +61,32 @@
       ]
     },
 
+    "rolls": {
+      "type": "array",
+      "title": "Rolls",
+      "description": "base dice rolls",
+      "uniqueItems": true,
+      "items": { "$ref": "#/definitions/roll" }
+    },
+
     "roll": {
       "type": "object",
-      "description": "base dice roll",
       "properties": {
+        "name": {
+          "type": "string",
+          "title": "Name",
+          "description": "Name of the roll"
+        },
         "dices": {
+          "title": "Dices",
           "description": "Number of dices in a roll",
           "type": "integer",
           "minimum": 1
         },
         "sides": {
-          "description": "Sides of each dice",
           "type": "array",
           "title": "Sides",
+          "description": "Sides of each dice",
           "uniqueItems": true,
           "items": {
             "type": "object",
@@ -90,15 +103,54 @@
           }
         }
       },
-      "required": ["dices", "sides"],
-      "default": { "dices": 3, "sides": [
-        { "symbol": "1", "value": 1 },
-        { "symbol": "2", "value": 2 },
-        { "symbol": "3", "value": 3 },
-        { "symbol": "4", "value": 4 },
-        { "symbol": "5", "value": 5 },
-        { "symbol": "6", "value": 6 }
+      "required": [ "name", "dices", "sides" ],
+      "default": {
+        "name": "3d6",
+        "dices": 3,
+        "sides": [
+          { "symbol": "1", "value": 1 },
+          { "symbol": "2", "value": 2 },
+          { "symbol": "3", "value": 3 },
+          { "symbol": "4", "value": 4 },
+          { "symbol": "5", "value": 5 },
+          { "symbol": "6", "value": 6 }
         ]
+      }
+    },
+
+    "character": {
+      "type": "object",
+      "properties": {
+        "gauge": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Type of the gauge",
+              "enum": [
+                "attribute",
+                "skill",
+                "trait",
+                "time"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the gauge"
+            },
+            "generation": {
+              "description": "Generation of the gauge",
+              "anyOf": [
+                {
+                  "type": "object",
+                  "title": "roll",
+                  "properties": { "$ref": "#/definitions/roll" }
+                },
+                { "type": "number" }
+              ]
+            }
+          }
+        }
       }
     },
 
@@ -111,6 +163,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "formula": {
+          "type": "string"
         }
       },
       "required": [ "name", "description" ]
@@ -121,8 +176,8 @@
   "type": "object",
   "properties": {
     "units": { "$ref": "#/definitions/units" },
-    "roll": { "$ref": "#/definitions/roll" },
+    "roll": { "$ref": "#/definitions/rolls" },
     "attributes": { "$ref": "#/definitions/attributes" }
   },
-  "required": [ "roll", "units", "attributes" ]
+  "required": [ "rolls", "units", "attributes" ]
 }
